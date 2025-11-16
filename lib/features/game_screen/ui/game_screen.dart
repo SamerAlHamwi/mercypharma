@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'dart:math';
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:mercypharma/core/constant/app_colors.dart';
 
@@ -30,7 +29,12 @@ class _MemoryGamePageState extends State<MemoryGamePage> with TickerProviderStat
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showFirstTimeDialog();
     });
+  }
 
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   void initGame(){
@@ -44,7 +48,9 @@ class _MemoryGamePageState extends State<MemoryGamePage> with TickerProviderStat
       'assets/images/3.png',
       'assets/images/4.png',
       'assets/images/5.png',
-      'assets/images/6.png'
+      'assets/images/6.png',
+      'assets/images/7.png',
+      'assets/images/8.png',
     ];
 
     cards = [];
@@ -358,20 +364,24 @@ class _MemoryGamePageState extends State<MemoryGamePage> with TickerProviderStat
               ),
             ),
             Expanded(
-              child: GridView.builder(
-                padding: const EdgeInsets.all(20),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
+              child: SingleChildScrollView(
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(20),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                  ),
+                  itemCount: cards.length,
+                  itemBuilder: (context, i) {
+                    return _MemoryCard(
+                      card: cards[i],
+                      onTap: () => _onCardTap(cards[i]),
+                    );
+                  },
                 ),
-                itemCount: cards.length,
-                itemBuilder: (context, i) {
-                  return _MemoryCard(
-                    card: cards[i],
-                    onTap: () => _onCardTap(cards[i]),
-                  );
-                },
               ),
             ),
           ],
@@ -431,9 +441,28 @@ class _MemoryCardState extends State<_MemoryCard> {
             ..rotateY(tiltY)
             ..scale(1 + (tiltX.abs() + tiltY.abs()) / 4),
           child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 350),
             transitionBuilder: (child, anim) {
-              return RotationYTransition(turns: anim, child: child);
+              final rotate = Tween(begin: pi, end: 0.0).animate(
+                CurvedAnimation(parent: anim, curve: Curves.easeInOut),
+              );
+
+              return AnimatedBuilder(
+                animation: rotate,
+                builder: (_, __) {
+                  final isUnder = (child.key != ValueKey(widget.card.isFlipped));
+                  final value = isUnder ? min(rotate.value, pi / 2) : rotate.value;
+
+                  return Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.identity()
+                      ..setEntry(3, 2, 0.001)
+                      ..rotateY(value),
+                    child: child,
+                  );
+                },
+                child: child,
+              );
             },
             child: widget.card.isFlipped || widget.card.isSolved
                 ? _front()
@@ -445,62 +474,52 @@ class _MemoryCardState extends State<_MemoryCard> {
   }
 
   Widget _back() {
-    return Transform(
-      alignment: Alignment.center,
-      transform: Matrix4.rotationY(math.pi),
-      child: Container(
-        key: const ValueKey('back'),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.greyColor, width: 2),
-          image: const DecorationImage(
-            image: AssetImage('assets/icons/logo2.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
-    )
-    ;
-  }
-
-  Widget _front() {
-    return Transform(
-      alignment: Alignment.center,
-      transform: Matrix4.rotationY(math.pi),
-      child: Container(
-        key: const ValueKey('front'),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.redColor, width: 2),
-        ),
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                height: 50,
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: Image.asset(
-                    widget.card.image,
-                  fit: BoxFit.fill,
-                ),
-              ),
-              SizedBox(height: 6,),
-              Text(
-                getImageName(widget.card.image) ?? '',
-                style: const TextStyle(
-                  color: Colors.black,
-                ),
-              )
-            ],
-          ),
+    return Container(
+      key: const ValueKey('back'),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.greyColor, width: 2),
+        image: const DecorationImage(
+          image: AssetImage('assets/icons/logo2.jpg'),
+          fit: BoxFit.cover,
         ),
       ),
     );
   }
+
+
+  Widget _front() {
+    return Container(
+      key: const ValueKey('front'),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.redColor, width: 2),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(6),
+              child: Image.asset(
+                widget.card.image,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Text(
+            getImageName(widget.card.image) ?? '',
+            style: const TextStyle(color: Colors.black),
+          )
+        ],
+      ),
+    );
+  }
+
 
   String? getImageName(String imagePath) {
     final number = extractImageNumber(imagePath);
