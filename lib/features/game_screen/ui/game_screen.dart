@@ -223,7 +223,7 @@ class _MemoryGamePageState extends State<MemoryGamePage> with TickerProviderStat
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  '🎉 مبروووك!',
+                  '🎉 لقد ربحت!',
                   style: TextStyle(
                     fontSize: 28,
                     color: Colors.white,
@@ -232,11 +232,21 @@ class _MemoryGamePageState extends State<MemoryGamePage> with TickerProviderStat
                 ),
                 const SizedBox(height: 12),
                 const Text(
-                  'لقد وجدت جميع الصور المتشابهة!👏',
+                  'ألف مبروووك من',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20,
                     color: Colors.white70,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Mercypharma',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Colors.white70,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 25),
@@ -342,6 +352,14 @@ class _MemoryGamePageState extends State<MemoryGamePage> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    final appBarHeight = kToolbarHeight;
+    final timerHeight = 60; // the text + padding area
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    final availableHeight = screenHeight - appBarHeight - timerHeight;
+    final rows = 6; // 18 cards / 3 columns
+    final cardHeight = availableHeight / rows;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -372,11 +390,14 @@ class _MemoryGamePageState extends State<MemoryGamePage> with TickerProviderStat
                 ),
               ),
             ),
-            Expanded(
+            SizedBox(
+              height: availableHeight,
               child: GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.all(20),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
+                  childAspectRatio: 1 / (cardHeight / (MediaQuery.of(context).size.width / 3)),
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
                 ),
