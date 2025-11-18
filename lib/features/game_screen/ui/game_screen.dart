@@ -51,6 +51,7 @@ class _MemoryGamePageState extends State<MemoryGamePage> with TickerProviderStat
       'assets/images/6.png',
       'assets/images/7.png',
       'assets/images/8.png',
+      'assets/images/9.png',
     ];
 
     cards = [];
@@ -507,7 +508,7 @@ class _MemoryCardState extends State<_MemoryCard> {
                 widget.card.image,
                 width: double.infinity,
                 height: double.infinity,
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
               ),
             ),
           ),
