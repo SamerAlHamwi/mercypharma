@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mercypharma/core/constant/app_colors.dart';
-
+import 'package:flutter/services.dart';
 import '../data/images_map.dart';
 
 class MemoryGamePage extends StatefulWidget {
@@ -25,6 +25,12 @@ class _MemoryGamePageState extends State<MemoryGamePage> with TickerProviderStat
   @override
   void initState() {
     super.initState();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     initGame();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showFirstTimeDialog();
@@ -34,6 +40,8 @@ class _MemoryGamePageState extends State<MemoryGamePage> with TickerProviderStat
   @override
   void dispose() {
     timer?.cancel();
+    SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+
     super.dispose();
   }
 
@@ -365,24 +373,20 @@ class _MemoryGamePageState extends State<MemoryGamePage> with TickerProviderStat
               ),
             ),
             Expanded(
-              child: SingleChildScrollView(
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(20),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                  ),
-                  itemCount: cards.length,
-                  itemBuilder: (context, i) {
-                    return _MemoryCard(
-                      card: cards[i],
-                      onTap: () => _onCardTap(cards[i]),
-                    );
-                  },
+              child: GridView.builder(
+                padding: const EdgeInsets.all(20),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
                 ),
+                itemCount: cards.length,
+                itemBuilder: (context, i) {
+                  return _MemoryCard(
+                    card: cards[i],
+                    onTap: () => _onCardTap(cards[i]),
+                  );
+                },
               ),
             ),
           ],
