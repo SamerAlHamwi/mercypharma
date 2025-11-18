@@ -511,7 +511,6 @@ class _MemoryCardState extends State<_MemoryCard> {
               child: Image.asset(
                 widget.card.image,
                 width: double.infinity,
-                height: double.infinity,
                 fit: BoxFit.fill,
               ),
             ),
