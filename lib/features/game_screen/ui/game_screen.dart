@@ -141,7 +141,7 @@ class _MemoryGamePageState extends State<MemoryGamePage> with TickerProviderStat
               borderRadius: BorderRadius.circular(28),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.25),
+                  color: Colors.black.withValues(alpha: 0.25),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -209,11 +209,11 @@ class _MemoryGamePageState extends State<MemoryGamePage> with TickerProviderStat
             width: MediaQuery.of(context).size.width * 0.8,
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              gradient: AppColors.gradient, // SAME APP GRADIENT
+              gradient: AppColors.gradient,
               borderRadius: BorderRadius.circular(28),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.25),
+                  color: Colors.black.withValues(alpha: 0.25),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -294,7 +294,7 @@ class _MemoryGamePageState extends State<MemoryGamePage> with TickerProviderStat
               borderRadius: BorderRadius.circular(28),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.25),
+                  color: Colors.black.withValues(alpha: 0.25),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
