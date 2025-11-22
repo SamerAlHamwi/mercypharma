@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'features/game_screen/ui/game_screen.dart';
+import 'features/select_type/ui/select_type_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +18,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Tajawal',
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
       ),
-      home: MemoryGamePage(),
+      home: SelectTypeScreen(),
     );
   }
 }

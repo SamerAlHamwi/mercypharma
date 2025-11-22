@@ -8,7 +8,10 @@ import 'package:flutter/services.dart';
 import '../data/images_map.dart';
 
 class MemoryGamePage extends StatefulWidget {
-  const MemoryGamePage({super.key});
+  const MemoryGamePage({super.key, required this.images, required this.type});
+
+  final List<String> images;
+  final int type;
 
   @override
   State<MemoryGamePage> createState() => _MemoryGamePageState();
@@ -50,20 +53,9 @@ class _MemoryGamePageState extends State<MemoryGamePage> with TickerProviderStat
     timer?.cancel();
 
 
-    List<String> images = [
-      'assets/images/1.png',
-      'assets/images/2.png',
-      'assets/images/3.png',
-      'assets/images/4.png',
-      'assets/images/5.png',
-      'assets/images/6.png',
-      'assets/images/7.png',
-      'assets/images/8.png',
-      'assets/images/9.png',
-    ];
 
     cards = [];
-    for (var img in images) {
+    for (var img in widget.images) {
       cards.add(_CardModel(image: img));
       cards.add(_CardModel(image: img));
     }
@@ -406,6 +398,7 @@ class _MemoryGamePageState extends State<MemoryGamePage> with TickerProviderStat
                   return _MemoryCard(
                     card: cards[i],
                     onTap: () => _onCardTap(cards[i]),
+                    type: widget.type,
                   );
                 },
               ),
@@ -428,8 +421,9 @@ class _CardModel {
 class _MemoryCard extends StatefulWidget {
   final _CardModel card;
   final VoidCallback onTap;
+  final int type;
 
-  const _MemoryCard({required this.card, required this.onTap});
+  const _MemoryCard({required this.card, required this.onTap, required this.type});
 
   @override
   State<_MemoryCard> createState() => _MemoryCardState();
@@ -548,7 +542,7 @@ class _MemoryCardState extends State<_MemoryCard> {
 
   String? getImageName(String imagePath) {
     final number = extractImageNumber(imagePath);
-    return imagesNames[number.toString()];
+    return widget.type == 1 ? imagesNames[number.toString()] :  imagesNames2[number.toString()];
   }
 
   int extractImageNumber(String path) {
